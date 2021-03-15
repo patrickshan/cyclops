@@ -29,6 +29,8 @@ type CycleSettings struct {
 	// it to prevent traffic being sent to it.
 	LabelsToRemove []string `json:"labelsToRemove,omitempty"`
 
+	// DaemonsetPodsToRemove is a struct which includes information about daemonset pods to remove
+	DaemonsetPodsToRemove DaemonsetPodsToRemove `json:"daemonsetPodsToRemove,omitempty"`
 	// IgnorePodLabels is a map of values for labels that describes which pods should be ignored when
 	// deciding whether a node has no more pods running. This map defines a union: any pod that
 	// matches any of the values for a given label name will be ignored.
@@ -37,4 +39,10 @@ type CycleSettings struct {
 	// IgnoreNamespaces is a list of namespace names in which running pods should be ignored
 	// when deciding whether a node has no more pods running.
 	IgnoreNamespaces []string `json:"ignoreNamespaces,omitempty"`
+}
+
+// DaemonsetPodsToRemove includes information about daeonset pods to remove
+type DaemonsetPodsToRemove struct {
+	NodeLabelsToRemove        map[string]string `json:"nodeLabelsToRemove,omitempty"`
+	DaemonsetPodsLabelsToWait map[string]string `json:"daemonsetPodsLabelsToWait,omitempty"`
 }

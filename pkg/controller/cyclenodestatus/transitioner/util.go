@@ -3,8 +3,8 @@ package transitioner
 import (
 	"time"
 
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	v1 "github.com/atlassian-labs/cyclops/pkg/apis/atlassian/v1"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
 // transitionToFailed transitions the current cycleNodeStatus to failed

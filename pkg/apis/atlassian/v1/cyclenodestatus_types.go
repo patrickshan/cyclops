@@ -52,6 +52,9 @@ const (
 	// CycleNodeStatusDrainingPods is for cycleNodeStatuses that are draining pods from the node
 	CycleNodeStatusDrainingPods CycleNodeStatusPhase = "DrainingPods"
 
+	// CycleNodeStatusRemovingDaemonsetPods is for cycleNodeStatuses that are removing daemonset pods from the node
+	CycleNodeStatusRemovingDaemonsetPods CycleNodeStatusPhase = "RemovingDaemonsetPods"
+
 	// CycleNodeStatusDeletingNode is for cycleNodeStatuses that are deleting the node out of the Kubernetes API
 	CycleNodeStatusDeletingNode CycleNodeStatusPhase = "DeletingNode"
 

@@ -3,8 +3,8 @@ package transitioner
 import (
 	"fmt"
 
-	corev1 "k8s.io/api/core/v1"
 	"github.com/atlassian-labs/cyclops/pkg/k8s"
+	corev1 "k8s.io/api/core/v1"
 )
 
 func (t *CycleNodeStatusTransitioner) removeLabelsFromPods() (finished bool, err error) {

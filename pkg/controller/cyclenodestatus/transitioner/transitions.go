@@ -154,7 +154,7 @@ func (t *CycleNodeStatusTransitioner) transitionDraining() (reconcile.Result, er
 	}
 	// No serious errors were encountered. If we're done, move on.
 	if finished {
-		return t.transitionObject(v1.CycleNodeStatusDeletingNode)
+		return t.transitionObject(v1.CycleNodeStatusRemovingDaemonsetPods)
 	}
 
 	// Fail if we've taken too long in this phase.
@@ -167,6 +167,30 @@ func (t *CycleNodeStatusTransitioner) transitionDraining() (reconcile.Result, er
 	}
 	// If all the pods aren't finished draining, try again a while later to avoid spamming the API server.
 	return reconcile.Result{Requeue: true, RequeueAfter: 30 * time.Second}, nil
+}
+
+// transitionRemovingDaemonsetPods transitions any CycleNodeStatuses in the RemovingDaemonsetPods phase to
+// the RemovingLabelsFromPods phase. Remove node label(s) from nodes and wait for target daemonsets pods
+// to be removed from the node
+func (t *CycleNodeStatusTransitioner) transitionRemovingDaemonsetPods() (reconcile.Result, error) {
+	t.rm.LogEvent(t.cycleNodeStatus, "RemovingDaemonsetPods", "Removing target Daemonset pods from node")
+	// actions defines a list of actions to perform before finishing this stage
+	actions := []waitFunc{t.removeLabelsFromNodes, t.waitTargetedDaemonsetPodsRemoved}
+
+	for _, action := range actions {
+		finished, err := action()
+		if err != nil {
+			return t.transitionToFailed(err)
+		}
+		if !finished {
+			if t.timedOut() {
+				return t.transitionToFailed(fmt.Errorf("timed out waiting for removing Daemonset pods"))
+			}
+			return reconcile.Result{Requeue: true, RequeueAfter: 20 * time.Second}, nil
+		}
+	}
+
+	return t.transitionObject(v1.CycleNodeStatusDeletingNode)
 }
 
 // transitionDeleting transitions any CycleNodeStatuses in the Deleting phase to the Terminating phase

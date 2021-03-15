@@ -10,6 +10,7 @@ import (
 )
 
 type transitionFunc func() (reconcile.Result, error)
+type waitFunc func() (bool, error)
 
 var (
 	transitionDuration = 10 * time.Second
@@ -63,6 +64,7 @@ func (t *CycleNodeStatusTransitioner) transitionFuncs() map[v1.CycleNodeStatusPh
 		v1.CycleNodeStatusWaitingPods:            t.transitionWaitingPods,
 		v1.CycleNodeStatusRemovingLabelsFromPods: t.transitionRemovingLabelsFromPods,
 		v1.CycleNodeStatusDrainingPods:           t.transitionDraining,
+		v1.CycleNodeStatusRemovingDaemonsetPods:  t.transitionRemovingDaemonsetPods,
 		v1.CycleNodeStatusDeletingNode:           t.transitionDeleting,
 		v1.CycleNodeStatusTerminatingNode:        t.transitionTerminating,
 		v1.CycleNodeStatusFailed:                 t.transitionFailed,

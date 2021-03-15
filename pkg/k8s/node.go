@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
@@ -44,6 +44,18 @@ func AddLabelToNode(nodeName string, labelName string, labelValue string, client
 			Value: labelValue,
 		},
 	}
+	return PatchNode(nodeName, patches, client)
+}
+
+// RemoveLabelsFromNode performs a patch operation on a node to remove labels from the node
+func RemoveLabelsFromNode(nodeName string, labelNames []string, client kubernetes.Interface) error {
+	patches := make([]Patch, len(labelNames))
+	for i := 0; i < len(labelNames); i++ {
+		patches[i] = Patch{Op: "remove",
+			// json patch spec maps "~1" to "/" as an escape sequence, so we do the translation here...
+			Path: fmt.Sprintf("/metadata/labels/%s", strings.Replace(labelNames[i], "/", "~1", -1))}
+	}
+
 	return PatchNode(nodeName, patches, client)
 }
 

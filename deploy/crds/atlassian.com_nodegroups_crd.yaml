@@ -55,6 +55,19 @@ spec:
                       will work on in parallel. Defaults to the size of the node group.
                     format: int64
                     type: integer
+                  daemonsetPodsToRemove:
+                    description: DaemonsetPodsToRemove is a struct which includes
+                      information about daemonset pods to remove
+                    properties:
+                      daemonsetPodsLabelsToWait:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      nodeLabelsToRemove:
+                        additionalProperties:
+                          type: string
+                        type: object
+                    type: object
                   ignoreNamespaces:
                     description: IgnoreNamespaces is a list of namespace names in
                       which running pods should be ignored when deciding whether a
